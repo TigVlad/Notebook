@@ -11,12 +11,12 @@ import java.util.Calendar;
 
 
 public class Bloknot {
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
         System.out.println("Записная книга \n");
         while (true) {
             BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
 
-            System.out.println("1.Создать новую запись.\n2.Посмотреть записи.\n3.Закрыть программу.\n");
+            System.out.println("1.Создать новую запись.\n2.Посмотреть записи.\n3. Удалить запись.\n0.Закрыть программу.\n");
 
             System.out.println("Выберите одну из команд: ");
 
@@ -39,26 +39,62 @@ public class Bloknot {
                 String record = reader.readLine();
                 try (BufferedWriter wr = new BufferedWriter(new FileWriter("file.txt", true))) {
                     wr.write(record + "      " + dateTime);
+                } catch (Exception e) {
+                    System.out.println("Нет такого файла");
+                    throw new FileNotFoundException();
 
                 }
             }
             if (team == 2) {
                 System.out.println("Просмотр записей: ");
-                BufferedReader rid = new BufferedReader(new FileReader("file.txt"));
-                String line;
-                int s = 1;
+               try (BufferedReader rid = new BufferedReader(new FileReader("file.txt"))) {
 
-                while ((line = rid.readLine()) != null) {
-                    System.out.println(s + ". " + line);
-                    s++;
-                }
+                   String line;
+                   int s = 1;
+
+                   while ((line = rid.readLine()) != null) {
+                       System.out.println(s + ". " + line);
+                       s++;
+                   }
+               } catch (Exception e) {
+                   System.out.println("Нет такого файла");
+                   throw new FileNotFoundException();
+               }
             }
 
-
             if (team == 3) {
+                System.out.println("Какую запись удалить: ");
+                ArrayList<String> list = new ArrayList<>();
+
+                try (BufferedReader rid = new BufferedReader(new FileReader("file.txt"))) {
+
+                    String line;
+                    int s = 1;
+
+                    while ((line = rid.readLine()) != null) {
+                        System.out.println(s + ". " + line);
+                        s++;
+                        list.add(line);
+                    }
+                } catch (Exception e) {
+                    System.out.println("Нет такого файла");
+                    throw new FileNotFoundException();
+                }
+                int delete = Integer.parseInt(reader.readLine());
+                delete--;
+                list.remove(delete);
+                BufferedWriter wr = new BufferedWriter(new FileWriter("file.txt"));
+
+                for (String nov : list) {
+                    wr.write(nov + "   " + dateTime + "\n");
+                }
+                wr.close();
+            }
+            if (team == 0) {
                 System.exit(0);
             }
         }
     }
 }
-// trow Exception ---- обработать исключения FileWriter, на отсутсвие файла
+
+//Добавить пункт под номером 3 для изменения записей
