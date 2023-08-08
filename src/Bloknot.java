@@ -16,7 +16,7 @@ public class Bloknot {
         while (true) {
             BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
 
-            System.out.println("1.Создать новую запись.\n2.Посмотреть записи.\n3. Удалить запись.\n0.Закрыть программу.\n");
+            System.out.println("1.Создать новую запись.\n2.Посмотреть записи.\n3. Изменить запись.\n4. Удалить запись.\n0.Закрыть программу.");
 
             System.out.println("Выберите одну из команд: ");
 
@@ -38,7 +38,7 @@ public class Bloknot {
                 System.out.println("Новая запись: ");
                 String record = reader.readLine();
                 try (BufferedWriter wr = new BufferedWriter(new FileWriter("file.txt", true))) {
-                    wr.write(record + "      " + dateTime);
+                    wr.write(record + "      " + dateTime + "\n");
                 } catch (Exception e) {
                     System.out.println("Нет такого файла");
                     throw new FileNotFoundException();
@@ -63,6 +63,37 @@ public class Bloknot {
             }
 
             if (team == 3) {
+                System.out.println("Какую запись изменить: ");
+                ArrayList<String> list = new ArrayList<>();
+
+                try (BufferedReader rid = new BufferedReader(new FileReader("file.txt"))) {
+
+                    String line;
+                    int s = 1;
+
+                    while ((line = rid.readLine()) != null) {
+                        System.out.println(s + ". " + line);
+                        s++;
+                        list.add(line);
+                    }
+                } catch (Exception e) {
+                    System.out.println("Нет такого файла");
+                    throw new FileNotFoundException();
+                }
+
+                int change = Integer.parseInt(reader.readLine());
+                change--;
+                String record = reader.readLine();
+                list.set(change,record);
+                BufferedWriter wr = new BufferedWriter(new FileWriter("file.txt"));
+
+                for (String nov : list) {
+                    wr.write(nov + "   " + dateTime + "\n");
+                }
+                wr.close();
+            }
+
+            if (team == 4) {
                 System.out.println("Какую запись удалить: ");
                 ArrayList<String> list = new ArrayList<>();
 
